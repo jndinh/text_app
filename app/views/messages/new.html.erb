@@ -1,0 +1,23 @@
+
+<h1>Send SMS Text</h1>
+<%= form_with scope: :message, url: messages_path, local: true do |form| %>
+  <p>
+    <%= form.label :user %><br>
+    <%= form.text_field :user %>
+  </p>
+
+  <p>
+    <%= form.label :number %><br>
+    <%= form.telephone_field :number %>
+    <%= form.submit "Verify Number", class: "btn btn-primary", name: 'verify_number'%>
+  </p>
+
+  <p>
+    <%= form.label :text_message %><br>
+    <%= form.text_area :text_message %>
+  </p>
+
+  <p>
+    <%= form.submit "Send SMS Text", class: "btn btn-primary"%>
+  </p>
+<% end %>
