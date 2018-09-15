@@ -1,0 +1,9 @@
+<h1>Showing All Messages</h1>
+
+<% @messages.each do |message| %>
+    <%= message.user %>
+    <%= message.number %>
+    <%= message.text %>
+    <%= link_to 'Show', message_path(message) %>
+    <br>
+<% end %>
