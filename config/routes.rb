@@ -1,8 +1,6 @@
 Rails.application.routes.draw do
   resources :messages
-    collection do
-      post 'reply'
-    end
+  post 'messages/reply'
 
   get 'welcome/index'
   root 'welcome#index'

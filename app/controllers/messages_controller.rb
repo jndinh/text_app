@@ -1,4 +1,6 @@
 class MessagesController < ApplicationController
+  skip_before_action :verify_authenticity_token
+
   def index
     @messages = Message.all
     puts Rails.application.secrets
@@ -28,7 +30,6 @@ class MessagesController < ApplicationController
     else
       render 'new'
     end
-
   end
 
   def destroy
@@ -36,6 +37,24 @@ class MessagesController < ApplicationController
     @message.destroy
 
     redirect_to messages_path
+  end
+
+  def reply
+    message_body = params["Body"]
+    from_number = params["From"]
+    @recent_msg = Message.where(number: from_number).last
+    user = @recent_msg.user
+
+    @message = Message.new(user: user, number: from_number, text: message_body)
+    if @message.save
+      boot_twilio
+      sms = @client.messages.create(
+        from: Rails.application.secrets.twilio_number,
+        to: from_number,
+        body: "Hello from the other side! Your number is #{from_number}."
+      )
+    end
+    head 200, "content_type" => 'text/html'
   end
 
   private
@@ -46,9 +65,6 @@ class MessagesController < ApplicationController
     def boot_twilio
       account_sid = Rails.application.secrets.twilio_sid
       auth_token = Rails.application.secrets.twilio_token
-      puts 'hello from HERE'
-      puts Rails.application.secrets
-      puts auth_token
       @client = Twilio::REST::Client.new(account_sid, auth_token)
     end
 
