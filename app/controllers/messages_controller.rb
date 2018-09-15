@@ -15,6 +15,7 @@ class MessagesController < ApplicationController
     @message = Message.new
   end
 
+  # Create a new message and send an SMS text.
   def create
     @message = Message.new(message_params)
 
@@ -39,12 +40,15 @@ class MessagesController < ApplicationController
     redirect_to messages_path
   end
 
+  # Webhook for Twilio to forward replies.
+  # Store any replies in the db and send back a a simple reply.
   def reply
     message_body = params["Body"]
     from_number = params["From"]
-    @recent_msg = Message.where(number: from_number).last
+    @recent_msg = Message.where(number: from_number).last # Get the name of this user if possible
     user = @recent_msg.user
 
+    # Store reply in db and send back a simple text.
     @message = Message.new(user: user, number: from_number, text: message_body)
     if @message.save
       boot_twilio
@@ -62,6 +66,7 @@ class MessagesController < ApplicationController
       params.require(:message).permit(:user, :number, :text)
     end
 
+    # Twilio setup client.
     def boot_twilio
       account_sid = Rails.application.secrets.twilio_sid
       auth_token = Rails.application.secrets.twilio_token
