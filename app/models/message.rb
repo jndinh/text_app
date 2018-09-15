@@ -1,4 +1,6 @@
 class Message < ApplicationRecord
-  #validates :number, format: { with: /\d{3}-\d{3}-\d{4}/, message: "bad format" }
+  validates :user, :text, presence: true
+  validates :number, presence: true, length: { is: 12}
+  phony_normalize :number, default_country_code: 'US'
 
 end

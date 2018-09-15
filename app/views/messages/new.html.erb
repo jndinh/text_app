@@ -1,21 +1,6 @@
 
 <h1>Send SMS Text</h1>
-<%= form_with scope: :message, url: messages_path, local: true do |form| %>
 
-  <div class="field">
-    <%= form.text_field :user, required: true, autofocus: true, placeholder: "Name" %>
-  </div><br>
+<%= render 'form' %>
 
-  <div class="field">
-    <%= form.telephone_field :number, required: true, autofocus: true, placeholder: "Telephone Number" %>
-  </div><br>
-
-  <div class="field">
-    <%= form.text_area :text, required: true, autofocus: true, placeholder: "SMS Text" %>
-  </div>
-
-  <div class="actions">
-    <%= form.submit "Send SMS Text" %>
-  </div>
-
-<% end %>
+<%= link_to 'Back', messages_path %>

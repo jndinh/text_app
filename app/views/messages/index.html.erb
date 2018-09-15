@@ -1,9 +1,14 @@
 <h1>Showing All Messages</h1>
 
+<%= link_to 'New Message', new_message_path %> <br>
+
 <% @messages.each do |message| %>
     <%= message.user %>
     <%= message.number %>
     <%= message.text %>
     <%= link_to 'Show', message_path(message) %>
+    <%= link_to 'Destroy', message_path(message),
+        method: :delete,
+        data: { confirm: 'Are you sure?' }%>
     <br>
 <% end %>
