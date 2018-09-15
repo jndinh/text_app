@@ -18,8 +18,10 @@ class MessagesController < ApplicationController
   # Create a new message and send an SMS text.
   def create
     @message = Message.new(message_params)
-
     if @message.save
+      @message.action = 'SEND'
+      @message.save
+
       # Send SMS text
       boot_twilio
       sms = @client.messages.create(
@@ -46,10 +48,17 @@ class MessagesController < ApplicationController
     message_body = params["Body"]
     from_number = params["From"]
     @recent_msg = Message.where(number: from_number).last # Get the name of this user if possible
+
+    # Some random schmoe not in our db is trying to text me.
+    if @recent_msg.blank?
+      head 200, "content_type" => 'text/html'
+      return
+    end
+
     user = @recent_msg.user
 
     # Store reply in db and send back a simple text.
-    @message = Message.new(user: user, number: from_number, text: message_body)
+    @message = Message.new(user: user, number: from_number, text: message_body, action: 'REPLY')
     if @message.save
       boot_twilio
       sms = @client.messages.create(
